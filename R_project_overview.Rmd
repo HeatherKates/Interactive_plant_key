@@ -1,0 +1,173 @@
+---
+title: "Interactive plant identification with R"
+author: "Heather Kates"
+date: "April 24, 2015"
+output: html_document
+---
+
+---
+title: "Interactive Plant Identification in R"
+author: "Heather Kates"
+date: "April 24, 2015"
+output: slidy_presentation
+---
+
+# Project Goal: Create an interactive key for identifying plant families
+1. Requiring specific code for each set of characters
+2. Reading user input for each set of characters
+3. Reading user input for each character 
+
+![key](http://oregonstate.edu/dept/ldplants/images/dichot-ex1.jpg)
+
+##### Traditional dichotomous key
+
+
+## Data and input to subset data
+**Data**
+```{r, echo=FALSE}
+plant_families <- read.csv(file="Plant_families_for_R.csv")
+head(plant_families)
+```
+**Input**
+herbaceous alternate absent inferior umbel bilateral  
+
+**Output**
+Family: Apiaceae
+  
+
+## 1. Learn a little about plant family characteristics
+
+#### What proportion of plant families are woody?
+```{r}
+plant_families <- read.csv(file="Plant_families_for_R.csv")
+prop <- nrow(subset(plant_families, habit == "woody"))/(nrow(plant_families))
+percent <- ((signif(prop, digits=3))*100)
+cat(percent, "% of the families are woody")
+```
+#### What proportion of plant families have stipules?
+```{r, echo=FALSE}
+plant_families <- read.csv(file="Plant_families_for_R.csv")
+```
+```{r}
+prop <- nrow(subset(plant_families, stipules == "present"))/nrow(plant_families)
+percent <- ((signif(prop, digits=3))*100)
+cat(percent, "% of the families have stipules")
+```
+####What proportion of the plant families are vines?
+```{r, echo=FALSE}
+plant_families <- read.csv(file="Plant_families_for_R.csv")
+```
+```{r}
+prop <- nrow(subset(plant_families, habit == "vine"))/nrow(plant_families)
+percent <- ((signif(prop, digits=3))*100)
+cat(percent, "% of the families are vines")
+```
+
+## Use the same approach to identify plant families from a set of character
+###I have a plant that is a vine with no stipules.  What family could it be?
+```{r, echo=FALSE}
+plant_families <- read.csv(file="Plant_families_for_R.csv")
+```
+```{r}
+Vine_nostipule_families <- subset(plant_families, habit =="vine" & stipules == "absent")
+Family <- as.vector(Vine_nostipule_families$Family)
+cat("Possible Families:", Family)
+```
+But this requires the code:
+```{r, eval=FALSE}
+subset(plant_families, habit =="vine" & stipules == "absent") 
+```
+to be rewritten for each query!
+Instead, we can prompt the user to enter these values and update the code
+
+## Prompting user to enter values that will update the code
+
+```{r}
+prompt <- "Describe your plant:
+habit(woody/herbaceous/vine)\nstipules(present/absent)\nleaf arrangement(opposite/alternate) 
+ovary position(superior/inferior)\ninflorescence(umbel/head/cyme/terminal)\nfloral symmetry(radial/zygomorphic/actinomorphic)"
+Character_list <- as.vector(strsplit(readline(prompt), " ")[[1]])
+```
+## Prompting user to enter values that will update the code
+Describe this plant:
+![Apiaceae](http://www.unomaha.edu/biodiversity/NEflora_photos/Other/1390-ApiaceaeCicuta_maculata-habit2.JPG)
+
+user-input in console
+```{r, eval=FALSE}
+> herbaceous absent alternate inferior umbel radial
+```
+Character_list is now a vector with 6 members
+```{r, eval=FALSE}
+> Character_list
+[1] "herbaceous"    "absent"  "alternate" "inferior" "umbel"    "radial"  
+```
+## User-created vector is used subset the data frame
+Check to see what families (rows) have all the charaters entered by the user:
+```{r, echo=FALSE}
+plant_families <- read.csv(file="Plant_families_for_R.csv")
+Character_list <- c("herbaceous","absent","alternate","inferior","umbel","bilateral")
+```
+```{r}
+Matching_rows <- subset(plant_families, habit == Character_list[1] & stipules == Character_list[2] 
+                        & leaf.arrangement == Character_list[3] & ovary.position== Character_list[4]  
+                        & inflorescence == Character_list[5]
+                        & floral.symmetry ==Character_list[6] )
+Matching_families <- (Matching_rows[1])
+print(Matching_families[1])
+```
+![text](http://www.wildflowers-and-weeds.com/Plant_Families/Apiaceae_pics/Apiaceae.jpg)
+
+This works, but it relies on the user following instructions exactly and is awkward
+
+## Creating vector from responses to multiple user prompts
+###Function that prompts user for multiple inputs about plant characteristics
+```{r}
+fun <- function(test)
+{
+habit <-readline("habit? ")
+leaf <-readline("leaf arrangement? ")
+stipules <-readline("stipules? ")
+ovary <- readline("ovary position? ")
+inflorescence <- readline("inflorescence type? ")
+symmetry <- readline("floral symmetry? ")
+
+habit <- as.character(habit)
+leaf <- as.character(leaf)
+stipules <- as.character(stipules)
+ovary <- as.character(ovary)
+inflorescence <- as.character(inflorescence)
+symmetry <- as.character(symmetry)
+#assign the six prompt responses to a vector called "input"
+input <- c(habit, leaf, stipules, ovary, inflorescence, symmetry)
+}
+#This only works in an interactive R session
+if(interactive()) fun(test)
+```
+
+## Creating vector from responses to multiple user prompts
+###Once the function is defined, you can run it over and over and assign its returned values (input) to vector "character_suite"
+```{r, eval=FALSE}
+character_suite <- fun(test)
+> character_suite <- fun(test)
+habit? herbaceous
+leaf arrangement? alternate
+stipules? absent
+ovary position? inferior
+inflorescence type? umbel
+floral symmetry? radial
+> character_suite
+[1] "herbaceous"    "absent"  "alternate" "inferior" "umbel"    "radial"  
+```
+
+## Subsetting data.frame with the user input character suite
+### This works the same way as when user input is read from a single line
+```{r}
+plant_families <- read.csv(file="Plant_families_for_R.csv")
+character_suite  <- c("herbaceous","absent","alternate","inferior","umbel","bilateral")
+Matching_rows <- subset(plant_families, habit == character_suite[1] & leaf.arrangement == character_suite[3]
+                        & stipules== character_suite[2] & ovary.position== character_suite[4]
+                        & inflorescence == character_suite[5]
+                        & floral.symmetry ==character_suite[6])
+Matching_families <- (Matching_rows$Family)
+print(Matching_rows[1])
+```
