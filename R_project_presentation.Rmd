@@ -8,7 +8,12 @@ output: slidy_presentation
 ## Project Goal: Create an interactive key for identifying plant families
 1. Requiring specific code for each set of characters
 2. Reading user input for each set of characters
-3. Reading user input for each character  
+3. Reading user input for each character 
+
+![key](http://oregonstate.edu/dept/ldplants/images/dichot-ex1.jpg)
+
+##### Traditional dichotomous key
+
 
 ## Data and input to subset data
 **Data**
@@ -33,15 +38,19 @@ percent <- ((signif(prop, digits=3))*100)
 cat(percent, "% of the families are woody")
 ```
 #### What proportion of plant families have stipules?
-```{r}
+```{r, echo=FALSE}
 plant_families <- read.csv(file="Plant_families_for_R.csv")
+```
+```{r}
 prop <- nrow(subset(plant_families, stipules == "present"))/nrow(plant_families)
 percent <- ((signif(prop, digits=3))*100)
 cat(percent, "% of the families have stipules")
 ```
 ####What proportion of the plant families are vines?
-```{r}
+```{r, echo=FALSE}
 plant_families <- read.csv(file="Plant_families_for_R.csv")
+```
+```{r}
 prop <- nrow(subset(plant_families, habit == "vine"))/nrow(plant_families)
 percent <- ((signif(prop, digits=3))*100)
 cat(percent, "% of the families are vines")
@@ -49,8 +58,10 @@ cat(percent, "% of the families are vines")
 
 ## Use the same approach to identify plant families from a set of character
 ###I have a plant that is a vine with no stipules.  What family could it be?
-```{r}
+```{r, echo=FALSE}
 plant_families <- read.csv(file="Plant_families_for_R.csv")
+```
+```{r}
 Vine_nostipule_families <- subset(plant_families, habit =="vine" & stipules == "absent")
 Family <- as.vector(Vine_nostipule_families$Family)
 cat("Possible Families:", Family)
@@ -70,6 +81,10 @@ habit(woody/herbaceous/vine)\nstipules(present/absent)\nleaf arrangement(opposit
 ovary position(superior/inferior)\ninflorescence(umbel/head/cyme/terminal)\nfloral symmetry(radial/zygomorphic/actinomorphic)"
 Character_list <- as.vector(strsplit(readline(prompt), " ")[[1]])
 ```
+## Prompting user to enter values that will update the code
+Describe this plant:
+![Apiaceae](http://www.unomaha.edu/biodiversity/NEflora_photos/Other/1390-ApiaceaeCicuta_maculata-habit2.JPG)
+
 user-input in console
 ```{r, eval=FALSE}
 > herbaceous absent alternate inferior umbel radial
@@ -79,11 +94,13 @@ Character_list is now a vector with 6 members
 > Character_list
 [1] "herbaceous"    "absent"  "alternate" "inferior" "umbel"    "radial"  
 ```
-## Using user-created vector to subset the data frame
+## User-created vector is used subset the data frame
 Check to see what families (rows) have all the charaters entered by the user:
-```{r}
+```{r, echo=FALSE}
 plant_families <- read.csv(file="Plant_families_for_R.csv")
 Character_list <- c("herbaceous","absent","alternate","inferior","umbel","bilateral")
+```
+```{r}
 Matching_rows <- subset(plant_families, habit == Character_list[1] & stipules == Character_list[2] 
                         & leaf.arrangement == Character_list[3] & ovary.position== Character_list[4]  
                         & inflorescence == Character_list[5]
@@ -91,6 +108,8 @@ Matching_rows <- subset(plant_families, habit == Character_list[1] & stipules ==
 Matching_families <- (Matching_rows[1])
 print(Matching_families[1])
 ```
+![text](http://www.wildflowers-and-weeds.com/Plant_Families/Apiaceae_pics/Apiaceae.jpg)
+
 This works, but it relies on the user following instructions exactly and is awkward
 
 ## Creating vector from responses to multiple user prompts
