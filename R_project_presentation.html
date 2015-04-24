@@ -7,7 +7,7 @@
   <meta name="generator" content="pandoc" />
   <meta name="author" content="Heather Kates" />
   <meta name="date" content="2015-04-24" />
-  <title>HR_R_project</title>
+  <title>Interactive Plant Identification in R</title>
   <style type="text/css">code{white-space: pre;}</style>
   <style type="text/css">
 table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
@@ -33,7 +33,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 </head>
 <body>
 <div class="slide titlepage">
-  <h1 class="title">HR_R_project</h1>
+  <h1 class="title">Interactive Plant Identification in R</h1>
   <p class="author">
 Heather Kates
   </p>
@@ -46,9 +46,12 @@ Heather Kates
 <li>Reading user input for each set of characters</li>
 <li>Reading user input for each character</li>
 </ol>
+</div>
+<div id="data-and-input-to-subset-data" class="slide section level2">
+<h1>Data and input to subset data</h1>
 <p><strong>Data</strong></p>
 <pre><code>##           Family      habit leaf.arrangement stipules ovary.position
-## 1       Apiaceae herbaceous         opposite   absent       superior
+## 1       Apiaceae herbaceous        alternate   absent       inferior
 ## 2     Araliaceae      woody         opposite  present       superior
 ## 3 Pittosporaceae herbaceous        alternate   absent       superior
 ## 4  Aquifoliaceae      woody        alternate  present       superior
@@ -61,7 +64,7 @@ Heather Kates
 ## 4         spike      bilaterial
 ## 5         umbel      bilaterial
 ## 6         umbel      bilaterial</code></pre>
-<p><strong>Input</strong> herbaceous opposite absent superior umbel bilateral</p>
+<p><strong>Input</strong> herbaceous alternate absent inferior umbel bilateral</p>
 <p><strong>Output</strong> Family: Apiaceae</p>
 </div>
 <div id="learn-a-little-about-plant-family-characteristics" class="slide section level2">
@@ -111,16 +114,16 @@ Character_list &lt;-<span class="st"> </span><span class="kw">as.vector</span>(<
 ## inflorescence(umbel/head/cyme/terminal)
 ## floral symmetry(radial/zygomorphic/actinomorphic)</code></pre>
 <p>user-input in console</p>
-<pre class="sourceCode r"><code class="sourceCode r">&gt;<span class="st"> </span>woody present opposite superior umbel radial</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">&gt;<span class="st"> </span>herbaceous absent alternate inferior umbel radial</code></pre>
 <p>Character_list is now a vector with 6 members</p>
 <pre class="sourceCode r"><code class="sourceCode r">&gt;<span class="st"> </span>Character_list
-[<span class="dv">1</span>] <span class="st">&quot;woody&quot;</span>    <span class="st">&quot;present&quot;</span>  <span class="st">&quot;opposite&quot;</span> <span class="st">&quot;superior&quot;</span> <span class="st">&quot;umbel&quot;</span>    <span class="st">&quot;radial&quot;</span>  </code></pre>
+[<span class="dv">1</span>] <span class="st">&quot;herbaceous&quot;</span>    <span class="st">&quot;absent&quot;</span>  <span class="st">&quot;alternate&quot;</span> <span class="st">&quot;inferior&quot;</span> <span class="st">&quot;umbel&quot;</span>    <span class="st">&quot;radial&quot;</span>  </code></pre>
 </div>
 <div id="using-user-created-vector-to-subset-the-data-frame" class="slide section level2">
 <h1>Using user-created vector to subset the data frame</h1>
 <p>Check to see what families (rows) have all the charaters entered by the user:</p>
 <pre class="sourceCode r"><code class="sourceCode r">plant_families &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="dt">file=</span><span class="st">&quot;Plant_families_for_R.csv&quot;</span>)
-Character_list &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;herbaceous&quot;</span>,<span class="st">&quot;absent&quot;</span>,<span class="st">&quot;opposite&quot;</span>,<span class="st">&quot;superior&quot;</span>,<span class="st">&quot;umbel&quot;</span>,<span class="st">&quot;bilateral&quot;</span>)
+Character_list &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;herbaceous&quot;</span>,<span class="st">&quot;absent&quot;</span>,<span class="st">&quot;alternate&quot;</span>,<span class="st">&quot;inferior&quot;</span>,<span class="st">&quot;umbel&quot;</span>,<span class="st">&quot;bilateral&quot;</span>)
 Matching_rows &lt;-<span class="st"> </span><span class="kw">subset</span>(plant_families, habit ==<span class="st"> </span>Character_list[<span class="dv">1</span>] &amp;<span class="st"> </span>stipules ==<span class="st"> </span>Character_list[<span class="dv">2</span>] 
                         &amp;<span class="st"> </span>leaf.arrangement ==<span class="st"> </span>Character_list[<span class="dv">3</span>] &amp;<span class="st"> </span>ovary.position==<span class="st"> </span>Character_list[<span class="dv">4</span>]  
                         &amp;<span class="st"> </span>inflorescence ==<span class="st"> </span>Character_list[<span class="dv">5</span>]
@@ -161,21 +164,21 @@ if(<span class="kw">interactive</span>()) <span class="kw">fun</span>(test)</cod
 <pre class="sourceCode r"><code class="sourceCode r">character_suite &lt;-<span class="st"> </span><span class="kw">fun</span>(test)
 &gt;<span class="st"> </span>character_suite &lt;-<span class="st"> </span><span class="kw">fun</span>(test)
 habit? herbaceous
-leaf arrangement? opposite
+leaf arrangement? alternate
 stipules? absent
-ovary position? superior
+ovary position? inferior
 inflorescence type? umbel
-floral symmetry? bilateral
+floral symmetry? radial
 &gt;<span class="st"> </span>character_suite
-[<span class="dv">1</span>] <span class="st">&quot;herbaceous&quot;</span> <span class="st">&quot;opposite&quot;</span>   <span class="st">&quot;absent&quot;</span>     <span class="st">&quot;superior&quot;</span>   <span class="st">&quot;umbel&quot;</span>      <span class="st">&quot;bilateral&quot;</span> </code></pre>
+[<span class="dv">1</span>] <span class="st">&quot;herbaceous&quot;</span>    <span class="st">&quot;absent&quot;</span>  <span class="st">&quot;alternate&quot;</span> <span class="st">&quot;inferior&quot;</span> <span class="st">&quot;umbel&quot;</span>    <span class="st">&quot;radial&quot;</span>  </code></pre>
 </div>
 <div id="subsetting-data.frame-with-the-user-input-character-suite" class="slide section level2">
 <h1>Subsetting data.frame with the user input character suite</h1>
-<h3 id="this-works-the-same-as-when-user-input-is-read-from-a-single-line">This works the same as when user input is read from a single line</h3>
+<h3 id="this-works-the-same-way-as-when-user-input-is-read-from-a-single-line">This works the same way as when user input is read from a single line</h3>
 <pre class="sourceCode r"><code class="sourceCode r">plant_families &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="dt">file=</span><span class="st">&quot;Plant_families_for_R.csv&quot;</span>)
-character_suite  &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;herbaceous&quot;</span>,<span class="st">&quot;opposite&quot;</span>,<span class="st">&quot;absent&quot;</span>,<span class="st">&quot;superior&quot;</span>,<span class="st">&quot;umbel&quot;</span>,<span class="st">&quot;bilateral&quot;</span>)
-Matching_rows &lt;-<span class="st"> </span><span class="kw">subset</span>(plant_families, habit ==<span class="st"> </span>character_suite[<span class="dv">1</span>] &amp;<span class="st"> </span>leaf.arrangement ==<span class="st"> </span>character_suite[<span class="dv">2</span>]
-                        &amp;<span class="st"> </span>stipules==<span class="st"> </span>character_suite[<span class="dv">3</span>] &amp;<span class="st"> </span>ovary.position==<span class="st"> </span>character_suite[<span class="dv">4</span>]
+character_suite  &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;herbaceous&quot;</span>,<span class="st">&quot;absent&quot;</span>,<span class="st">&quot;alternate&quot;</span>,<span class="st">&quot;inferior&quot;</span>,<span class="st">&quot;umbel&quot;</span>,<span class="st">&quot;bilateral&quot;</span>)
+Matching_rows &lt;-<span class="st"> </span><span class="kw">subset</span>(plant_families, habit ==<span class="st"> </span>character_suite[<span class="dv">1</span>] &amp;<span class="st"> </span>leaf.arrangement ==<span class="st"> </span>character_suite[<span class="dv">3</span>]
+                        &amp;<span class="st"> </span>stipules==<span class="st"> </span>character_suite[<span class="dv">2</span>] &amp;<span class="st"> </span>ovary.position==<span class="st"> </span>character_suite[<span class="dv">4</span>]
                         &amp;<span class="st"> </span>inflorescence ==<span class="st"> </span>character_suite[<span class="dv">5</span>]
                         &amp;<span class="st"> </span>floral.symmetry ==character_suite[<span class="dv">6</span>])
 Matching_families &lt;-<span class="st"> </span>(Matching_rows$Family)

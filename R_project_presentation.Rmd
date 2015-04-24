@@ -10,13 +10,14 @@ output: slidy_presentation
 2. Reading user input for each set of characters
 3. Reading user input for each character  
 
+## Data and input to subset data
 **Data**
 ```{r, echo=FALSE}
 plant_families <- read.csv(file="Plant_families_for_R.csv")
 head(plant_families)
 ```
 **Input**
-herbaceous opposite absent superior umbel bilateral  
+herbaceous alternate absent inferior umbel bilateral  
 
 **Output**
 Family: Apiaceae
@@ -71,18 +72,18 @@ Character_list <- as.vector(strsplit(readline(prompt), " ")[[1]])
 ```
 user-input in console
 ```{r, eval=FALSE}
-> woody present opposite superior umbel radial
+> herbaceous absent alternate inferior umbel radial
 ```
 Character_list is now a vector with 6 members
 ```{r, eval=FALSE}
 > Character_list
-[1] "woody"    "present"  "opposite" "superior" "umbel"    "radial"  
+[1] "herbaceous"    "absent"  "alternate" "inferior" "umbel"    "radial"  
 ```
 ## Using user-created vector to subset the data frame
 Check to see what families (rows) have all the charaters entered by the user:
 ```{r}
 plant_families <- read.csv(file="Plant_families_for_R.csv")
-Character_list <- c("herbaceous","absent","opposite","superior","umbel","bilateral")
+Character_list <- c("herbaceous","absent","alternate","inferior","umbel","bilateral")
 Matching_rows <- subset(plant_families, habit == Character_list[1] & stipules == Character_list[2] 
                         & leaf.arrangement == Character_list[3] & ovary.position== Character_list[4]  
                         & inflorescence == Character_list[5]
@@ -123,22 +124,22 @@ if(interactive()) fun(test)
 character_suite <- fun(test)
 > character_suite <- fun(test)
 habit? herbaceous
-leaf arrangement? opposite
+leaf arrangement? alternate
 stipules? absent
-ovary position? superior
+ovary position? inferior
 inflorescence type? umbel
-floral symmetry? bilateral
+floral symmetry? radial
 > character_suite
-[1] "herbaceous" "opposite"   "absent"     "superior"   "umbel"      "bilateral" 
+[1] "herbaceous"    "absent"  "alternate" "inferior" "umbel"    "radial"  
 ```
 
 ## Subsetting data.frame with the user input character suite
 ### This works the same way as when user input is read from a single line
 ```{r}
 plant_families <- read.csv(file="Plant_families_for_R.csv")
-character_suite  <- c("herbaceous","opposite","absent","superior","umbel","bilateral")
-Matching_rows <- subset(plant_families, habit == character_suite[1] & leaf.arrangement == character_suite[2]
-                        & stipules== character_suite[3] & ovary.position== character_suite[4]
+character_suite  <- c("herbaceous","absent","alternate","inferior","umbel","bilateral")
+Matching_rows <- subset(plant_families, habit == character_suite[1] & leaf.arrangement == character_suite[3]
+                        & stipules== character_suite[2] & ovary.position== character_suite[4]
                         & inflorescence == character_suite[5]
                         & floral.symmetry ==character_suite[6])
 Matching_families <- (Matching_rows$Family)
